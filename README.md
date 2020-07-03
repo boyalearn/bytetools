@@ -43,3 +43,6 @@
 #### 运行方式
 
 在java启动命令上添加 -javaagent:xxxx.jar=configPathFile
+
+BasicHttpEntity
+
