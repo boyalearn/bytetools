@@ -31,11 +31,11 @@
     <!-- 配置异常打印耗时-->
     <!--<exception-monitor>
         <excludeFilters>
-            <exclude package="com.bytetools.test" clazz="Controller" method="send"/>
-            <exclude package="com.bytetools.test" clazz="Controller" method="send"/>
+            <exclude package="com.bytecode.test" clazz="Controller" method="send"/>
+            <exclude package="com.bytecode.test" clazz="Controller" method="send"/>
         </excludeFilters>
         <includeFilters>
-            <include package="com.bytetools.test" clazz="Expect" method="test"/>
+            <include package="com.bytecode.test" clazz="Expect" method="test"/>
         </includeFilters>
     </exception-monitor>-->
 </config>`

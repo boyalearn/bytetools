@@ -1,21 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config>
-    <!--<time-monitor>
-        <excludeFilters>
-            <exclude package="" clazz="" method="setNonNullParameter"/>
-            <exclude package="" clazz="ProfessionalServiceAccessoryExpiredCleanTimer" method="getAccessoryCreateTime"/>
-        </excludeFilters>
-        <includeFilters>
-            <include package="com.huawei.psm" clazz="" method=""/>
-        </includeFilters>
-    </time-monitor>-->
-    <exception-monitor>
-        <!--<excludeFilters>
-            <exclude package="com.bytetools.test" clazz="Controller" method="send"/>
-            <exclude package="com.bytetools.test" clazz="Controller" method="send"/>
-        </excludeFilters>-->
-        <includeFilters>
-            <include package="com.bytetools.test" clazz="ByteCodeTestMain" method=""/>
-        </includeFilters>
-    </exception-monitor>
+    <log-file fileName="" />
+    <agent type="com.bytecode.config.AgentType.TIME">
+        <include package="com.test" clazz="" method=""/>
+        <include package="com.test.service" clazz="" method=""/>
+        <exclude package="com.test.service" clazz="" method="eat"/>
+        <!--<exclude package="com.test" clazz="" method="end"/>-->
+    </agent>
+    <agent type="com.bytecode.config.AgentType.EXCEPTION">
+        <include package="com.test" clazz="" method=""/>
+        <include package="com.test.service" clazz="" method="eat"/>
+        <!--<exclude package="com.test" clazz="" method="end"/>-->
+    </agent>
 </config>

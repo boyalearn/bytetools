@@ -1,4 +1,4 @@
-package com.bytetools.utils;
+package com.bytecode.utils;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

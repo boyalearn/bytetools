@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+    <log-file fileName="" />
+    <agent type="com.bytecode.config.AgentType.TIME">
+        <exclude package=""
+                 clazz=""
+                 method="setNonNullParameter"/>
+        <exclude package=""
+                 clazz="ProfessionalServiceAccessoryExpiredCleanTimer"
+                 method="getAccessoryCreateTime"/>
+
+        <include package="org.apache.http.impl.io"
+                 clazz="ContentLengthOutputStream"
+                 method="write"/>
+
+    </agent>
+    <agent type="com.bytecode.config.AgentType.EXCEPTION">
+        <exclude package=""
+                 clazz=""
+                 method="setNonNullParameter"/>
+        <exclude package=""
+                 clazz="ProfessionalServiceAccessoryExpiredCleanTimer"
+                 method="getAccessoryCreateTime"/>
+
+        <include package="org.apache.http.impl.io"
+                 clazz="ContentLengthOutputStream"
+                 method="write"/>
+
+    </agent>
+</config>
