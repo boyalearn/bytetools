@@ -17,7 +17,9 @@
 
 #### 配置文件
 
-`<config>
+`
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
 
     <log-file fileName="D://monitor.log" />
     
@@ -37,7 +39,7 @@
         
     </agent>
     
- </config>
+</config>
 `
 
 #### 运行方式
