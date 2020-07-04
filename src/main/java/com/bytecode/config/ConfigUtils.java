@@ -32,6 +32,11 @@ public class ConfigUtils {
 
     private static boolean parse = false;
 
+    public static String getLogFileName(){
+
+        return CONFIG.getLogFileName();
+    }
+
     public static List<ConfigNode> getConfigNodeList(AgentType agentType, boolean isInclude) {
         Set<ConfigNode> set = new HashSet<ConfigNode>();
         if (isInclude) {

@@ -39,7 +39,7 @@ public class MethodUtil {
         body.append("  "+type + " result = "+newName + "($$);");
         }
         body.append("  "+newName + "($$);");
-        body.append("  com.bytecode.utils.MonitorPrinter.println(\"Call method " + ctMethod.getLongName() + " took \" + (System.currentTimeMillis()-start) + \" ms.\");");
+        body.append("  com.bytecode.utils.MonitorPrinter.println(\"call method " + ctMethod.getLongName() + " took \" + (System.currentTimeMillis()-start) + \" ms.\");");
         if (!"void".equals(type)) {
         body.append("  return result;");
         }

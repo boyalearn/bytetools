@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config>
-    <log-file fileName="" />
+    <log-file fileName="D://monitor.log" />
     <agent type="com.bytecode.config.AgentType.TIME">
         <include package="com.test" clazz="" method=""/>
         <include package="com.test.service" clazz="" method=""/>
