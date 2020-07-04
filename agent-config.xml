@@ -8,11 +8,9 @@
         <exclude package=""
                  clazz="ProfessionalServiceAccessoryExpiredCleanTimer"
                  method="getAccessoryCreateTime"/>
-
         <include package="org.apache.http.impl.io"
                  clazz="ContentLengthOutputStream"
                  method="write"/>
-
     </agent>
     <agent type="com.bytecode.config.AgentType.EXCEPTION">
         <exclude package=""
@@ -21,10 +19,8 @@
         <exclude package=""
                  clazz="ProfessionalServiceAccessoryExpiredCleanTimer"
                  method="getAccessoryCreateTime"/>
-
         <include package="org.apache.http.impl.io"
                  clazz="ContentLengthOutputStream"
                  method="write"/>
-
     </agent>
 </config>
