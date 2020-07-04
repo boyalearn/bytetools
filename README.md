@@ -19,14 +19,23 @@
 
 `
 <config>
+
     <log-file fileName="D://monitor.log" />
+    
     <agent type="com.bytecode.config.AgentType.TIME">
+    
         <include package="com.test" clazz="" method=""/>
+        
         <exclude package="com.test.service" clazz="" method="eat"/>
+        
     </agent>
+    
     <agent type="com.bytecode.config.AgentType.EXCEPTION">
+    
         <include package="com.test.service" clazz="" method="eat"/>
+        
         <exclude package="com.test" clazz="" method="end"/>
+        
     </agent>
 </config>
 `
