@@ -22,7 +22,6 @@ import javassist.CtNewMethod;
  */
 public class ExceptionMonitorAgent implements TransformerAgent {
 
-    @Override
     public CtClass transform(CtClass ctClass, String className, ClassLoader loader) {
         CtMethod[] methods = ctClass.getDeclaredMethods();
         for (CtMethod method : methods) {
@@ -122,10 +121,5 @@ public class ExceptionMonitorAgent implements TransformerAgent {
         } catch (Exception e) {
             System.out.println("change method error " + ctClass.getPackageName() + "." + oldName);
         }
-    }
-
-    @Override
-    public boolean shouldTransform(CtClass ctClass, String className) {
-        return true;
     }
 }

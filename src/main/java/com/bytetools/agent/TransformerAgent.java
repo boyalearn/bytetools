@@ -9,6 +9,4 @@ import javassist.NotFoundException;
  */
 public interface TransformerAgent {
     CtClass transform(CtClass ctClass, String className, ClassLoader loader);
-
-    boolean shouldTransform(CtClass ctClass, String className);
 }

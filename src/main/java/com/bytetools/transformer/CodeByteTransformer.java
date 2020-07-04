@@ -19,7 +19,6 @@ import javassist.NotFoundException;
 
 public class CodeByteTransformer implements ClassFileTransformer {
 
-    @Override
     public byte[] transform(ClassLoader loader, String className, Class<?> classBeingRedefined,
         ProtectionDomain protectionDomain, byte[] classfileBuffer) throws IllegalClassFormatException {
 
@@ -59,9 +58,7 @@ public class CodeByteTransformer implements ClassFileTransformer {
             }
             for (TransformerAgent agent : AgentFilter.getTransformerAgent()) {
 
-                if (agent.shouldTransform(ctClass, className)) {
                     tmpCtClass = agent.transform(ctClass, className, loader);
-                }
             }
 
             if (null != tmpCtClass) {

@@ -7,7 +7,6 @@ import javassist.bytecode.AccessFlag;
 
 public class TimeMonitorAgent implements TransformerAgent {
 
-    @Override
     public CtClass transform(CtClass ctClass, String className, ClassLoader loader) {
         try {
             CtMethod[] ctMethods = ctClass.getDeclaredMethods();
@@ -60,10 +59,4 @@ public class TimeMonitorAgent implements TransformerAgent {
         }
     }
 
-    @Override
-    public boolean shouldTransform(CtClass ctClass, String className) {
-
-        return true;
-
-    }
 }
