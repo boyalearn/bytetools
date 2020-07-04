@@ -5,11 +5,11 @@
         <include package="com.test" clazz="" method=""/>
         <include package="com.test.service" clazz="" method=""/>
         <exclude package="com.test.service" clazz="" method="eat"/>
-        <!--<exclude package="com.test" clazz="" method="end"/>-->
+        <exclude package="com.test" clazz="" method="end"/>
     </agent>
     <agent type="com.bytecode.config.AgentType.EXCEPTION">
         <include package="com.test" clazz="" method=""/>
         <include package="com.test.service" clazz="" method="eat"/>
-        <!--<exclude package="com.test" clazz="" method="end"/>-->
+        <exclude package="com.test" clazz="" method="end"/>
     </agent>
 </config>
