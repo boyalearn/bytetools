@@ -19,7 +19,7 @@
 
 `
 
-<config>
+ <config>
 
     <log-file fileName="D://monitor.log" />
     
@@ -39,7 +39,7 @@
         
     </agent>
     
-</config>
+ </config>
 `
 
 #### 运行方式
