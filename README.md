@@ -18,8 +18,6 @@
 #### 配置文件
 
 `
-<xml version="1.0" encoding="UTF-8"?>
-<config>
 
     <log-file fileName="D://monitor.log" />
     
@@ -38,9 +36,6 @@
         <exclude package="com.test" clazz="" method="end"/>
         
     </agent>
-    
-</config>
-</xml>
 `
 
 #### 运行方式
