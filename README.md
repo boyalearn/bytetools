@@ -17,9 +17,7 @@
 
 #### 配置文件
 
-`
-
- <config>
+`<config>
 
     <log-file fileName="D://monitor.log" />
     
