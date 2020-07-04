@@ -17,32 +17,22 @@
 
 #### 配置文件
 
-`<config>
-    <!-- 配置耗时监听 -->
-    <time-monitor>
-        <excludeFilters>
-            <exclude package="" clazz="" method="setNonNullParameter"/>
-            <exclude package="" clazz="ProfessionalServiceAccessoryExpiredCleanTimer" method="getAccessoryCreateTime"/>
-        </excludeFilters>
-        <includeFilters>
-            <include package="com.huawei.psm" clazz="" method=""/>
-        </includeFilters>
-    </time-monitor>
-    <!-- 配置异常打印耗时-->
-    <!--<exception-monitor>
-        <excludeFilters>
-            <exclude package="com.bytecode.test" clazz="Controller" method="send"/>
-            <exclude package="com.bytecode.test" clazz="Controller" method="send"/>
-        </excludeFilters>
-        <includeFilters>
-            <include package="com.bytecode.test" clazz="Expect" method="test"/>
-        </includeFilters>
-    </exception-monitor>-->
-</config>`
+`
+<config>
+    <log-file fileName="D://monitor.log" />
+    <agent type="com.bytecode.config.AgentType.TIME">
+        <include package="com.test" clazz="" method=""/>
+        <exclude package="com.test.service" clazz="" method="eat"/>
+    </agent>
+    <agent type="com.bytecode.config.AgentType.EXCEPTION">
+        <include package="com.test.service" clazz="" method="eat"/>
+        <exclude package="com.test" clazz="" method="end"/>
+    </agent>
+</config>
+`
 
 #### 运行方式
 
 在java启动命令上添加 -javaagent:xxxx.jar=configPathFile
 
-BasicHttpEntity
 
