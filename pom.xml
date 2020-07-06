@@ -41,5 +41,6 @@
                 </configuration>
             </plugin>
         </plugins>
+        <finalName>bytetools</finalName>
     </build>
 </project>
