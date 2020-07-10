@@ -5,6 +5,7 @@ import com.test.service.Cat;
 public class TestMain {
     public static void main(String[] args) {
         start(System.currentTimeMillis());
+        start(System.currentTimeMillis());
         end();
     }
     private static void start(long time){

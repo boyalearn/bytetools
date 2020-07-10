@@ -17,6 +17,11 @@ public class MonitorPrinter {
     }
 
     public static void printMonitorException(Exception e) {
-        e.printStackTrace();
+        if(!FileIO.writeFile()){
+            e.printStackTrace();
+        }else{
+            e.printStackTrace(FileIO.getPrintStream());
+        }
+
     }
 }
