@@ -1,9 +1,17 @@
 package com.test.service;
 
+import java.sql.Time;
+
 public class Cat {
-    public void eat() throws Exception{
+    public void eat() {
         System.out.println("cat eat");
-        int k=20/0;
-        System.out.println(k);
+    }
+
+    public void work(){
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -19,6 +19,8 @@ public class TestMain {
     }
 
     private static void end(){
+        new Cat().work();
+        new Cat().eat();
         System.out.println("end");
     }
 

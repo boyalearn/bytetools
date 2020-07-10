@@ -30,19 +30,21 @@ public class MethodUtil {
         ctMethod.setBody(buildMonitorTimeMethodBody(ctClass, ctMethod, oldName, newName));
     }
 
-    private static String buildMonitorTimeMethodBody(CtClass ctClass, CtMethod ctMethod, String oldName, String newName) throws NotFoundException {
+    private static String buildMonitorTimeMethodBody(CtClass ctClass, CtMethod ctMethod, String oldName, String newName) throws NotFoundException, CannotCompileException {
+        String currentMethodName=ctMethod.getLongName();
         StringBuilder body = new StringBuilder();
         body.append("{");
-        body.append("  long start = System.currentTimeMillis();");
+        body.append("  com.bytecode.method.TimeMonitorUtils.markMethodStart(\""+currentMethodName+"\");");
+        body.append("try{");
         String type = ctMethod.getReturnType().getName();
         if (!"void".equals(type)) {
         body.append("  "+type + " result = "+newName + "($$);");
         }
         body.append("  "+newName + "($$);");
-        body.append("  com.bytecode.utils.MonitorPrinter.println(\"call method " + ctMethod.getLongName() + " took \" + (System.currentTimeMillis()-start) + \" ms.\");");
         if (!"void".equals(type)) {
         body.append("  return result;");
         }
+        body.append("}finally{ com.bytecode.method.TimeMonitorUtils.doMethodEnd(\""+currentMethodName+"\");}");
         body.append("}");
         return body.toString();
     }
