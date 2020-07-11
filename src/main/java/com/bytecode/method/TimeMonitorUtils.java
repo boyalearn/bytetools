@@ -6,9 +6,8 @@ import java.util.Stack;
 
 public class TimeMonitorUtils {
 
+    private static long stackDeep;
     private static final Stack<TimeMethodInfo> methodStack = new Stack<TimeMethodInfo>();
-
-    private static final Stack<TimeMethodInfo> printStack = new Stack<TimeMethodInfo>();
 
     public static void markMethodStart(String methodName) {
         methodStack.push(new TimeMethodInfo(methodName, System.currentTimeMillis()));
@@ -17,24 +16,16 @@ public class TimeMonitorUtils {
     public static void doMethodEnd(String methodName) {
         int deep = methodStack.size();
         StringBuffer sb = new StringBuffer("");
-        for (int i = 0; i < deep; i++) {
-            sb.append("--");
+        for (int i = 2; i < deep; i++) {
+            sb.append("│ ");
         }
-        sb.append(">  ");
+        if (1 < deep) {
+            sb.append("├─");
+        }
         TimeMethodInfo methodInfo = methodStack.pop();
         long spend = System.currentTimeMillis() - methodInfo.getMarkTime();
-        printStack.push(new TimeMethodInfo(sb.toString() + methodName, spend));
-        if (methodStack.isEmpty()) {
-            printSpendTime();
-        }
-
+        MonitorPrinter.println(sb.toString() + methodName + String.format(" [%6d ms]",spend));
     }
 
-    private static void printSpendTime() {
-        while (!printStack.isEmpty()) {
-            TimeMethodInfo methodInfo = printStack.pop();
-            MonitorPrinter.println(methodInfo.getMethodName() + " [" + methodInfo.getMarkTime() + "ms]");
-        }
-    }
 
 }
