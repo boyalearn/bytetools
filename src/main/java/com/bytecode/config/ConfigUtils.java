@@ -32,7 +32,7 @@ public class ConfigUtils {
 
     private static boolean parse = false;
 
-    public static String getLogFileName(){
+    public static String getLogFileName() {
 
         return CONFIG.getLogFileName();
     }
@@ -53,32 +53,33 @@ public class ConfigUtils {
                 }
             }
         }
-        List<ConfigNode> list=new ArrayList<ConfigNode>();
-        for(ConfigNode node: set){
+        List<ConfigNode> list = new ArrayList<ConfigNode>();
+        for (ConfigNode node : set) {
             list.add(node);
         }
         return list;
     }
 
-    public static boolean shouldIncludeClassName(String className){
+    public static boolean shouldIncludeClassName(String className) {
         List<ConfigNode> excludeList = getConfigNodeList(AgentType.EXCEPTION, false);
-        for(ConfigNode node : excludeList){
-            if(isIncludeClass(node,StringUtils.getPackageName(className),StringUtils.getClassName(className))){
+        for (ConfigNode node : excludeList) {
+            if (isIncludeClass(node, StringUtils.getPackageName(className), StringUtils.getClassName(className))) {
                 return false;
             }
         }
         List<ConfigNode> includeList = getConfigNodeList(AgentType.TIME, true);
-        for(ConfigNode node : includeList){
-            if(isIncludeClass(node,StringUtils.getPackageName(className),StringUtils.getClassName(className))){
+        for (ConfigNode node : includeList) {
+            if (isIncludeClass(node, StringUtils.getPackageName(className), StringUtils.getClassName(className))) {
                 return true;
             }
         }
 
         return false;
     }
-    private static boolean isIncludeClass(ConfigNode node, String packageName, String className){
-        if (StringUtils.isEmpty(node.getPackageConfig())|| node.getPackageConfig().equals(packageName)) {
-            if(StringUtils.isEmpty(node.getClassConfig())||node.getClassConfig().equals(className)){
+
+    private static boolean isIncludeClass(ConfigNode node, String packageName, String className) {
+        if (StringUtils.isEmpty(node.getClassConfig()) || className.contains(node.getClassConfig())) {
+            if (StringUtils.isEmpty(node.getPackageConfig()) || packageName.equals(node.getPackageConfig())) {
                 return true;
             }
         }
@@ -103,12 +104,6 @@ public class ConfigUtils {
 
     public static boolean shouldAppendSpendTimeCode(String packageName, String className, String methodName) {
 
-        for (ConfigNode node : getConfigNodeList(AgentType.TIME, false)) {
-            if (isIncludeMethod(node, packageName, className, methodName)) {
-                return false;
-            }
-        }
-
         for (ConfigNode node : getConfigNodeList(AgentType.TIME, true)) {
             if (isIncludeMethod(node, packageName, className, methodName)) {
                 return true;
@@ -118,17 +113,15 @@ public class ConfigUtils {
     }
 
     private static boolean isIncludeMethod(ConfigNode node, String packageName, String className, String methodName) {
-        if (StringUtils.isEmpty(node.getPackageConfig()) || node.getPackageConfig().equals(packageName)) {
-            if (StringUtils.isEmpty(node.getClassConfig()) || node.getClassConfig().equals(className)) {
-                if(StringUtils.isEmpty(node.getMethodConfig())||node.getMethodConfig().equals(methodName)){
+        if(StringUtils.isEmpty(node.getMethodConfig())||methodName.contains(node.getMethodConfig())){
+            if(StringUtils.isEmpty(node.getClassConfig())||className.contains(node.getClassConfig())){
+                if(StringUtils.isEmpty(node.getPackageConfig())||packageName.equals(node.getPackageConfig())){
                     return true;
                 }
             }
         }
         return false;
     }
-
-
 
 
     public static void loadConfig(String configPath) {
@@ -159,8 +152,8 @@ public class ConfigUtils {
     }
 
     private static void parseAgentConfigInfo(Element root) throws ClassNotFoundException {
-            parseExcludesConfig(root);
-            parseIncludesConfig(root);
+        parseExcludesConfig(root);
+        parseIncludesConfig(root);
     }
 
     private static void parseIncludesConfig(Node node) {
@@ -181,7 +174,7 @@ public class ConfigUtils {
             NamedNodeMap attrs = exclude.getAttributes();
             ConfigNode configNode = new ConfigNode();
             Node doc = exclude.getParentNode();
-            String type=doc.getAttributes().item(0).getNodeValue();
+            String type = doc.getAttributes().item(0).getNodeValue();
             AgentType agentType = AgentType.getAgentType(type);
             configNode.setType(agentType);
             for (int j = 0; j < attrs.getLength(); j++) {

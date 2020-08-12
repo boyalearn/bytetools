@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config>
-    <log-file fileName="D:/monitor.log" />
+    <log-file fileName="" />
     <agent type="com.bytecode.config.AgentType.TIME">
-        <include package="org.apache.http.entity" clazz="BasicHttpEntity" method="writeTo"/>
-		<include package="org.apache.http.impl.io" clazz="ContentLengthOutputStream" method="write" />
+        <include package="com.test.service" clazz="" method=""/>
+<!--		<include package="org.apache.http.impl.io" clazz="ContentLengthOutputStream" method="write" />
         <include package="org.apache.http.impl.io" clazz="SessionOutputBufferImpl" method="write"/>
-        <include package="org.apache.http.impl.io" clazz="SessionOutputBufferImpl" method="flushBuffer"/>
+        <include package="org.apache.http.impl.io" clazz="SessionOutputBufferImpl" method="flushBuffer"/>-->
     </agent>
 </config>

@@ -34,7 +34,7 @@ public class MethodUtil {
         String currentMethodName=ctMethod.getLongName();
         StringBuilder body = new StringBuilder();
         body.append("{");
-        body.append("  com.bytecode.method.TimeMonitorUtils.markMethodStart(\""+currentMethodName+"\");");
+        body.append("  long __startTime=System.currentTimeMillis();");
         body.append("try{");
         String type = ctMethod.getReturnType().getName();
         if (!"void".equals(type)) {
@@ -44,7 +44,9 @@ public class MethodUtil {
         if (!"void".equals(type)) {
         body.append("  return result;");
         }
-        body.append("}finally{ com.bytecode.method.TimeMonitorUtils.doMethodEnd(\""+currentMethodName+"\");}");
+        body.append("}finally{ ");
+        body.append( "com.bytecode.utils.MonitorPrinter.println(\""+currentMethodName+"call spend \"+(System.currentTimeMillis()-__startTime)+\" ms.\");");
+        body.append("}");
         body.append("}");
         return body.toString();
     }
