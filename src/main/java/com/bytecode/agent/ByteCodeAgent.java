@@ -6,6 +6,8 @@ import com.bytecode.utils.StringUtils;
 import javassist.CtClass;
 import javassist.CtMethod;
 
+import java.lang.reflect.Method;
+
 public class ByteCodeAgent implements TransformerAgent {
     @Override
     public CtClass transform(CtClass ctClass, String className, ClassLoader loader) {

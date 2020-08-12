@@ -2,7 +2,7 @@
 <config>
     <log-file fileName="" />
     <agent type="com.bytecode.config.AgentType.TIME">
-        <include package="com.test.service" clazz="" method=""/>
+        <include package="com.test.service" clazz="Service$" method=""/>
 <!--		<include package="org.apache.http.impl.io" clazz="ContentLengthOutputStream" method="write" />
         <include package="org.apache.http.impl.io" clazz="SessionOutputBufferImpl" method="write"/>
         <include package="org.apache.http.impl.io" clazz="SessionOutputBufferImpl" method="flushBuffer"/>-->

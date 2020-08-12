@@ -27,26 +27,49 @@ public class MethodUtil {
         newMethod.setName(newName);
         ctClass.addMethod(newMethod);
         //构造原始方法的方法体
-        ctMethod.setBody(buildMonitorTimeMethodBody(ctClass, ctMethod, oldName, newName));
+        ctMethod.setBody(buildMonitorTimeCommonMethodBody(ctMethod, oldName, newName));
     }
 
-    private static String buildMonitorTimeMethodBody(CtClass ctClass, CtMethod ctMethod, String oldName, String newName) throws NotFoundException, CannotCompileException {
-        String currentMethodName=ctMethod.getLongName();
+    private static String buildMonitorTimeMethodBody(CtMethod ctMethod, String oldName, String newName) throws NotFoundException, CannotCompileException {
+        String currentMethodName = ctMethod.getLongName();
         StringBuilder body = new StringBuilder();
         body.append("{");
         body.append("  long __startTime=System.currentTimeMillis();");
         body.append("try{");
         String type = ctMethod.getReturnType().getName();
         if (!"void".equals(type)) {
-        body.append("  "+type + " result = "+newName + "($$);");
+            body.append("  " + type + " result = " + newName + "($$);");
+        } else {
+            body.append("  " + newName + "($$);");
         }
-        body.append("  "+newName + "($$);");
         if (!"void".equals(type)) {
-        body.append("  return result;");
+            body.append("  return result;");
         }
         body.append("}finally{ ");
-        body.append( "com.bytecode.utils.MonitorPrinter.println(\""+currentMethodName+"call spend \"+(System.currentTimeMillis()-__startTime)+\" ms.\");");
+        body.append("com.bytecode.utils.MonitorPrinter.println(\"" + currentMethodName + "call spend \"+(System.currentTimeMillis()-__startTime)+\" ms.\");");
         body.append("}");
+        if (!"void".equals(type)) {
+            body.append("return null;");
+        }
+        body.append("}");
+        return body.toString();
+    }
+
+    private static String buildMonitorTimeCommonMethodBody(CtMethod ctMethod, String oldName, String newName) throws NotFoundException, CannotCompileException {
+        String currentMethodName = ctMethod.getLongName();
+        StringBuilder body = new StringBuilder();
+        body.append("{");
+        body.append("  long __startTime=System.currentTimeMillis();");
+        String type = ctMethod.getReturnType().getName();
+        if (!"void".equals(type)) {
+            body.append("  " + type + " result = " + newName + "($$);");
+        } else {
+            body.append("  " + newName + "($$);");
+        }
+        body.append("com.bytecode.utils.MonitorPrinter.println(\"" + currentMethodName + "call spend \"+(System.currentTimeMillis()-__startTime)+\" ms.\");");
+        if (!"void".equals(type)) {
+            body.append("  return result;");
+        }
         body.append("}");
         return body.toString();
     }
@@ -96,6 +119,7 @@ public class MethodUtil {
         }
 
     }
+
     private static String buildMonitorExceptionMethodBody(String newName) throws NotFoundException {
         StringBuilder body = new StringBuilder();
         body.append("{");

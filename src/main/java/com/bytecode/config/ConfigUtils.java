@@ -14,8 +14,10 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author zWX827285
@@ -30,11 +32,21 @@ public class ConfigUtils {
 
     private static AgentConfig CONFIG = new AgentConfig();
 
+    private static List<String> CGLIB_CLASS = new ArrayList<String>();
+
     private static boolean parse = false;
 
     public static String getLogFileName() {
 
         return CONFIG.getLogFileName();
+    }
+
+    public static List<String> getCglibClass() {
+        return CGLIB_CLASS;
+    }
+
+    public static void addCglibClass(String cglibClass) {
+        CGLIB_CLASS.add(cglibClass);
     }
 
     public static List<ConfigNode> getConfigNodeList(AgentType agentType, boolean isInclude) {
@@ -113,9 +125,9 @@ public class ConfigUtils {
     }
 
     private static boolean isIncludeMethod(ConfigNode node, String packageName, String className, String methodName) {
-        if(StringUtils.isEmpty(node.getMethodConfig())||methodName.contains(node.getMethodConfig())){
-            if(StringUtils.isEmpty(node.getClassConfig())||className.contains(node.getClassConfig())){
-                if(StringUtils.isEmpty(node.getPackageConfig())||packageName.equals(node.getPackageConfig())){
+        if (StringUtils.isEmpty(node.getMethodConfig()) || methodName.contains(node.getMethodConfig())) {
+            if (StringUtils.isEmpty(node.getClassConfig()) || className.contains(node.getClassConfig())) {
+                if (StringUtils.isEmpty(node.getPackageConfig()) || packageName.equals(node.getPackageConfig())) {
                     return true;
                 }
             }
