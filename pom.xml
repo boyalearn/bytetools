@@ -7,11 +7,10 @@
     <version>0.0.1</version>
 
     <dependencies>
-        <!-- https://mvnrepository.com/artifact/javassist/javassist -->
         <dependency>
-            <groupId>javassist</groupId>
+            <groupId>org.javassist</groupId>
             <artifactId>javassist</artifactId>
-            <version>3.11.0.GA</version>
+            <version>3.20.0-GA</version>
         </dependency>
     </dependencies>
 

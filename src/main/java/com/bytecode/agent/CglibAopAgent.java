@@ -4,6 +4,8 @@ import javassist.*;
 
 public class CglibAopAgent implements TransformerAgent {
 
+    public static final String CLASS_NAME="DynamicAdvisedInterceptor";
+
     @Override
     public CtClass transform(CtClass ctClass, String className, ClassLoader loader) {
         CtMethod[] methods = ctClass.getDeclaredMethods();
