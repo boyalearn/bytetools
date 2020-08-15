@@ -117,6 +117,12 @@ public class MethodUtil {
         }
     }
 
+    public static CtClass getCtClass(ClassLoader loader, String className) throws NotFoundException {
+        ClassPool pool = ClassPool.getDefault();
+        pool.appendClassPath(new LoaderClassPath(loader));
+        return pool.getCtClass(className.replace("/", "."));
+    }
+
     public static String getMethodParameter(Method method) {
         StringBuffer stringBuffer = new StringBuffer();
         Class<?>[] parameterTypes = method.getParameterTypes();

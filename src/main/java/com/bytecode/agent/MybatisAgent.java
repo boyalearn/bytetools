@@ -1,5 +1,6 @@
 package com.bytecode.agent;
 
+import com.bytecode.method.MethodUtil;
 import javassist.*;
 
 public class MybatisAgent implements TransformerAgent {
@@ -10,7 +11,8 @@ public class MybatisAgent implements TransformerAgent {
     private final String UPDATE_METHOD_NAME = "update";
 
     @Override
-    public CtClass transform(CtClass ctClass, String className, ClassLoader loader) throws Exception {
+    public CtClass transform(String className, ClassLoader loader) throws Exception {
+        CtClass ctClass = MethodUtil.getCtClass(loader, className);
         CtMethod[] methods = ctClass.getDeclaredMethods();
         for (CtMethod method : methods) {
             if (isQueryMethod(method) || isUpdateMethod(method)) {

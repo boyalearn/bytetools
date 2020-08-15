@@ -1,13 +1,14 @@
 package com.bytecode.agent;
 
+import com.bytecode.method.MethodUtil;
 import javassist.*;
 
 public class CglibAopAgent implements TransformerAgent {
 
     public static final String CLASS_NAME = "DynamicAdvisedInterceptor";
 
-    @Override
-    public CtClass transform(CtClass ctClass, String className, ClassLoader loader) throws Exception {
+    public CtClass transform(String className, ClassLoader loader) throws Exception {
+        CtClass ctClass = MethodUtil.getCtClass(loader, className);
         CtMethod[] methods = ctClass.getDeclaredMethods();
         for (CtMethod method : methods) {
             if (method.getName().contains("intercept")) {
@@ -26,6 +27,7 @@ public class CglibAopAgent implements TransformerAgent {
         //构造原始方法的方法体
         ctMethod.setBody(buildMonitorTimeAopMethodBody(ctMethod, copyMethodName));
     }
+
 
     private String buildMonitorTimeAopMethodBody(CtMethod ctMethod, String copyMethodName) throws NotFoundException, CannotCompileException {
         StringBuilder methodBody = new StringBuilder();

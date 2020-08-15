@@ -9,7 +9,9 @@ import javassist.CtMethod;
 
 public class ByteCodeAgent implements TransformerAgent {
     @Override
-    public CtClass transform(CtClass ctClass, String className, ClassLoader loader) throws Exception {
+    public CtClass transform(String className, ClassLoader loader) throws Exception {
+        CtClass ctClass = MethodUtil.getCtClass(loader, className);
+
         CtMethod[] methods = ctClass.getDeclaredMethods();
         for (CtMethod method : methods) {
             if (MethodUtil.shouldSkipCommonMethod(method.getName())) {
