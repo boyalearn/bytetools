@@ -22,15 +22,15 @@ void loadConf() throws IOException
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <config>
-<log-file fileName="D://monitor.log" />
-<agent type="com.bytecode.config.AgentType.TIME">
-    <include package="com.test" clazz="" method=""/>
-    <exclude package="com.test.service" clazz="" method="eat"/>
-</agent>
-<agent type="com.bytecode.config.AgentType.EXCEPTION">
-    <include package="com.test.service" clazz="" method="eat"/>
-    <exclude package="com.test" clazz="" method="end"/>
-</agent>
+    <!-- 如果配置了文件路径那么日志将打印到文件中 -->
+    <log-file fileName="D://monitor.log" />
+    <!-- type目前支持两种，一种是监听方法调用耗时(TIME)、一种是监听方法中处理的异常信息方便问题定位(EXCEPTION) -->
+    <agent type="com.bytecode.config.AgentType.TIME">
+        <!-- 包含的方法配置 -->
+        <include package="com.test" clazz="" method=""/>
+        <!-- 排除的方法配置 -->
+        <exclude package="com.test.service" clazz="" method="eat"/>
+    </agent>
 </config>
 ```
 
