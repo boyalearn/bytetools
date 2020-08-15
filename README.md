@@ -20,6 +20,8 @@ void loadConf() throws IOException
 #### 配置文件
 
 ```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
 <log-file fileName="D://monitor.log" />
 <agent type="com.bytecode.config.AgentType.TIME">
     <include package="com.test" clazz="" method=""/>
@@ -29,6 +31,7 @@ void loadConf() throws IOException
     <include package="com.test.service" clazz="" method="eat"/>
     <exclude package="com.test" clazz="" method="end"/>
 </agent>
+</config>
 ```
 
 #### 运行方式
