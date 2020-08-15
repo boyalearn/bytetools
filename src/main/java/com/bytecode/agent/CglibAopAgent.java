@@ -4,55 +4,46 @@ import javassist.*;
 
 public class CglibAopAgent implements TransformerAgent {
 
-    public static final String CLASS_NAME="DynamicAdvisedInterceptor";
+    public static final String CLASS_NAME = "DynamicAdvisedInterceptor";
 
     @Override
-    public CtClass transform(CtClass ctClass, String className, ClassLoader loader) {
+    public CtClass transform(CtClass ctClass, String className, ClassLoader loader) throws Exception {
         CtMethod[] methods = ctClass.getDeclaredMethods();
         for (CtMethod method : methods) {
             if (method.getName().contains("intercept")) {
-                System.out.println(method.getName());
-
-                try {
-                    changeMethodToMonitorSpendTime(ctClass, method);
-                } catch (CannotCompileException e) {
-                    e.printStackTrace();
-                } catch (NotFoundException e) {
-                    e.printStackTrace();
-                }
+                changeMethodToMonitorSpendTime(ctClass, method);
             }
-
         }
         return ctClass;
     }
 
     public void changeMethodToMonitorSpendTime(CtClass ctClass, CtMethod ctMethod) throws CannotCompileException, NotFoundException {
-        String oldName = ctMethod.getName();
-        String newName = oldName + "__doTimeMethod";
-        CtMethod newMethod = CtNewMethod.copy(ctMethod, oldName, ctClass, null);
-        newMethod.setName(newName);
+        String methodName = ctMethod.getName();
+        String copyMethodName = "_doAgent" + methodName;
+        CtMethod newMethod = CtNewMethod.copy(ctMethod, methodName, ctClass, null);
+        newMethod.setName(copyMethodName);
         ctClass.addMethod(newMethod);
         //构造原始方法的方法体
-        ctMethod.setBody(buildMonitorTimeAopMethodBody(ctMethod, newName));
+        ctMethod.setBody(buildMonitorTimeAopMethodBody(ctMethod, copyMethodName));
     }
 
-    private String buildMonitorTimeAopMethodBody(CtMethod ctMethod, String newName) throws NotFoundException, CannotCompileException {
+    private String buildMonitorTimeAopMethodBody(CtMethod ctMethod, String copyMethodName) throws NotFoundException, CannotCompileException {
         StringBuilder methodBody = new StringBuilder();
         methodBody.append("{");
-        methodBody.append("  long __startTime=System.currentTimeMillis();");
-        methodBody.append("try{");
-        methodBody.append("  return " + newName + "($$);");
-        methodBody.append("}catch(Exception e){");
-        methodBody.append("  throw e;");
-        methodBody.append("}finally{ ");
-        methodBody.append("  String __className=$1.getClass().getName();");
-        methodBody.append(" System.out.println(__className);");
-        methodBody.append("  String __methodName=((java.lang.reflect.Method)$2).getName();");
-        methodBody.append("  if(com.bytecode.utils.AopClassFilter.include(__className,__methodName))");
-        methodBody.append("    com.bytecode.utils.MonitorPrinter.println(__className+\".\"+__methodName+\"() call spend \"+(System.currentTimeMillis()-__startTime)+\" ms.\");");
+        methodBody.append("    long __startTime=System.currentTimeMillis();");
+        methodBody.append("    try {");
+        methodBody.append("        return  #copyMethodName#($$);");
+        methodBody.append("    } catch( Exception e) {");
+        methodBody.append("        throw e;");
+        methodBody.append("    }finally{ ");
+        methodBody.append("        String _className = $1.getClass().getName();");
+        methodBody.append("        String _methodName = ((java.lang.reflect.Method)$2).getName();");
+        methodBody.append("        String _parameters = com.bytecode.method.MethodUtil.getMethodParameter( $2 );");
+        methodBody.append("        if( com.bytecode.config.ConfigUtils.shouldInclude( _className, _methodName ) )");
+        methodBody.append("            com.bytecode.utils.MonitorUtil.monitor( _className+\".\"+_methodName+\"(\"+_parameters+\")\", System.currentTimeMillis()-__startTime );");
+        methodBody.append("    }");
         methodBody.append("}");
-        methodBody.append("}");
-        System.out.println(methodBody.toString());
-        return methodBody.toString();
+        return methodBody.toString().replaceAll("#copyMethodName#", copyMethodName);
     }
+
 }

@@ -5,21 +5,12 @@ package com.bytecode.config;
  */
 public class ConfigNode {
 
-    private AgentType type;
-
     private String packageConfig;
 
     private String classConfig;
 
     private String methodConfig;
 
-    public AgentType getType() {
-        return type;
-    }
-
-    public void setType(AgentType type) {
-        this.type = type;
-    }
 
     public String getPackageConfig() {
         return packageConfig;

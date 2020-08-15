@@ -1,7 +1,9 @@
 package com.bytecode.method;
 
-import com.bytecode.utils.MonitorPrinter;
+import com.bytecode.log.Log;
 import javassist.*;
+
+import java.lang.reflect.Method;
 
 public class MethodUtil {
     public static boolean shouldSkipCommonMethod(String methodName) {
@@ -21,45 +23,45 @@ public class MethodUtil {
     }
 
     public static void changeMethodToMonitorSpendTime(CtClass ctClass, CtMethod ctMethod) throws CannotCompileException, NotFoundException {
-        String oldName = ctMethod.getName();
-        String newName = oldName + "__doTimeMethod";
-        CtMethod newMethod = CtNewMethod.copy(ctMethod, oldName, ctClass, null);
-        newMethod.setName(newName);
-        ctClass.addMethod(newMethod);
+        String changedMethodName = ctMethod.getName();
+        String copyMethodName = "_do" + changedMethodName;
+        CtMethod copyMethod = CtNewMethod.copy(ctMethod, changedMethodName, ctClass, null);
+        copyMethod.setName(copyMethodName);
+        ctClass.addMethod(copyMethod);
         //构造原始方法的方法体
-        ctMethod.setBody(buildMonitorTimeMethodBody(ctMethod, newName));
+        ctMethod.setBody(buildMonitorTimeMethodBody(ctMethod, copyMethodName));
     }
 
-    private static String buildMonitorTimeMethodBody(CtMethod ctMethod,  String newName) throws NotFoundException, CannotCompileException {
-        String currentMethodName = ctMethod.getLongName();
+    private static String buildMonitorTimeMethodBody(CtMethod ctMethod, String copyMethodName) throws NotFoundException, CannotCompileException {
         StringBuilder body = new StringBuilder();
+
         body.append("{");
-        body.append("  long __startTime=System.currentTimeMillis();");
-        body.append("try{");
-        String type = ctMethod.getReturnType().getName();
-        if (!"void".equals(type)) {
-            body.append("  return " + newName + "($$);");
+        body.append("    long _startTime = System.currentTimeMillis();");
+        body.append("    try{");
+        body.append("        #return# #copyMethodName#($$);");
+        body.append("    }finally{");
+        body.append("        com.bytecode.utils.MonitorUtil.monitor( \"#methodName#\" , System.currentTimeMillis()-_startTime );");
+        body.append("    }");
+        body.append("}");
+
+        String methodName = ctMethod.getLongName();
+        String methodBody = body.toString().replaceAll("#copyMethodName#", copyMethodName)
+                .replaceAll("#methodName#", methodName);
+
+        if ("void".equals(ctMethod.getReturnType().getName())) {
+            return methodBody.replaceAll("#return#", "");
         } else {
-            body.append("  " + newName + "($$);");
+            return methodBody.replaceAll("#return#", "return");
         }
-        body.append("}finally{ ");
-        body.append("com.bytecode.utils.MonitorPrinter.println(\"" + currentMethodName + "call spend \"+(System.currentTimeMillis()-__startTime)+\" ms.\");");
-        body.append("}");
-        body.append("}");
-        return body.toString();
     }
 
 
     public static void changeMethodToMonitorException(CtClass ctClass, CtMethod method) {
         try {
             changeMethodExceptionInArgs(method);
-        } catch (Exception e) {
-            MonitorPrinter.printException(e);
-        }
-        try {
             changeMethodExceptionMethodSignature(ctClass, method);
         } catch (Exception e) {
-            MonitorPrinter.printException(e);
+            Log.log(e);
         }
     }
 
@@ -67,7 +69,7 @@ public class MethodUtil {
         CtClass[] parameterTypes = method.getParameterTypes();
         for (int i = 0; i < parameterTypes.length; i++) {
             if (isExceptionClass(parameterTypes[i])) {
-                method.insertBefore("{com.bytecode.utils.MonitorPrinter.printMonitorException($" + (i + 1) + ");}");
+                method.insertBefore("{com.bytecode.utils.MonitorUtil.printE($" + (i + 1) + ");}");
             }
         }
     }
@@ -86,26 +88,44 @@ public class MethodUtil {
 
     private static void changeMethodExceptionMethodSignature(CtClass ctClass, CtMethod method) throws NotFoundException, CannotCompileException {
         if (method.getExceptionTypes().length > 0) {
-            String oldName = method.getName();
-            String newName = oldName + "_exception";
-            CtMethod newMethod = CtNewMethod.copy(method, oldName, ctClass, null);
+            String methodName = method.getName();
+            String newName = "_E" + methodName;
+            CtMethod newMethod = CtNewMethod.copy(method, methodName, ctClass, null);
             newMethod.setName(newName);
             ctClass.addMethod(newMethod);
-            method.setBody(buildMonitorExceptionMethodBody(newName));
+            method.setBody(buildMonitorExceptionMethodBody(method, newName));
         }
 
     }
 
-    private static String buildMonitorExceptionMethodBody(String newName) throws NotFoundException {
+    private static String buildMonitorExceptionMethodBody(CtMethod method, String newName) throws NotFoundException {
         StringBuilder body = new StringBuilder();
         body.append("{");
-        body.append("  try{");
-        body.append("    return " + newName + "($$); ");
-        body.append("  }catch(Exception e){");
-        body.append("    com.bytecode.utils.MonitorPrinter.printMonitorException(e);");
-        body.append("    throw e;");
-        body.append("  }");
+        body.append("    try{");
+        body.append("        #return# #newMethod#($$); ");
+        body.append("    }catch(Exception e){");
+        body.append("        com.bytecode.utils.MonitorUtil.printE(e);");
+        body.append("        throw e;");
+        body.append("    }");
         body.append("}");
-        return body.toString();
+
+        String methodBody = body.toString().replaceAll("#newMethod#", newName);
+        if ("void".equals(method.getReturnType().getName())) {
+            return methodBody.replaceAll("#return#", "");
+        } else {
+            return methodBody.replaceAll("#return#", "return");
+        }
+    }
+
+    public static String getMethodParameter(Method method) {
+        StringBuffer stringBuffer = new StringBuffer();
+        Class<?>[] parameterTypes = method.getParameterTypes();
+        if (parameterTypes.length == 0) {
+            return stringBuffer.toString();
+        }
+        for (Class<?> parameterType : parameterTypes) {
+            stringBuffer.append("," + parameterType.getTypeName());
+        }
+        return stringBuffer.toString().substring(1);
     }
 }

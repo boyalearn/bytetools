@@ -36,9 +36,19 @@ public class ConfigUtils {
 
     private static boolean parse = false;
 
+    private static AgentType agentType;
+
     public static String getLogFileName() {
 
         return CONFIG.getLogFileName();
+    }
+
+    public static AgentType getAgentType() {
+        return agentType;
+    }
+
+    public static void setAgentType(AgentType agentType) {
+        ConfigUtils.agentType = agentType;
     }
 
     public static List<String> getCglibClass() {
@@ -49,20 +59,18 @@ public class ConfigUtils {
         CGLIB_CLASS.add(cglibClass);
     }
 
-    public static List<ConfigNode> getConfigNodeList(AgentType agentType, boolean isInclude) {
+    public static List<ConfigNode> getConfigNodeList(boolean isInclude) {
         Set<ConfigNode> set = new HashSet<ConfigNode>();
         if (isInclude) {
             for (ConfigNode node : CONFIG.getIncludes()) {
-                if (node.getType().equals(agentType)) {
-                    set.add(node);
-                }
+                set.add(node);
+
 
             }
         } else {
             for (ConfigNode node : CONFIG.getExcludes()) {
-                if (node.getType().equals(agentType)) {
-                    set.add(node);
-                }
+                set.add(node);
+
             }
         }
         List<ConfigNode> list = new ArrayList<ConfigNode>();
@@ -73,13 +81,13 @@ public class ConfigUtils {
     }
 
     public static boolean shouldIncludeClassName(String className) {
-        List<ConfigNode> excludeList = getConfigNodeList(AgentType.EXCEPTION, false);
+        List<ConfigNode> excludeList = getConfigNodeList(false);
         for (ConfigNode node : excludeList) {
             if (isIncludeClass(node, StringUtils.getPackageName(className), StringUtils.getClassName(className))) {
                 return false;
             }
         }
-        List<ConfigNode> includeList = getConfigNodeList(AgentType.TIME, true);
+        List<ConfigNode> includeList = getConfigNodeList(true);
         for (ConfigNode node : includeList) {
             if (isIncludeClass(node, StringUtils.getPackageName(className), StringUtils.getClassName(className))) {
                 return true;
@@ -98,25 +106,14 @@ public class ConfigUtils {
         return false;
     }
 
-    public static boolean shouldAppendExceptionCode(String packageName, String className, String methodName) {
 
-        for (ConfigNode node : getConfigNodeList(AgentType.EXCEPTION, false)) {
+    public static boolean shouldIncludeClass(String packageName, String className, String methodName) {
+        for (ConfigNode node : getConfigNodeList(false)) {
             if (isIncludeMethod(node, packageName, className, methodName)) {
                 return false;
             }
         }
-
-        for (ConfigNode node : getConfigNodeList(AgentType.EXCEPTION, true)) {
-            if (isIncludeMethod(node, packageName, className, methodName)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public static boolean shouldAppendSpendTimeCode(String packageName, String className, String methodName) {
-
-        for (ConfigNode node : getConfigNodeList(AgentType.TIME, true)) {
+        for (ConfigNode node : getConfigNodeList(true)) {
             if (isIncludeMethod(node, packageName, className, methodName)) {
                 return true;
             }
@@ -155,12 +152,18 @@ public class ConfigUtils {
             Document doc = documentBuilder.parse(file);
             Element root = doc.getDocumentElement();
             parseLogFileInfo(root);
+            parseAgentType(root);
             parseAgentConfigInfo(root);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         parse = true;
+    }
+
+    private static void parseAgentType(Element root) {
+        String type = root.getElementsByTagName("agent").item(0).getAttributes().item(0).getNodeValue();
+        setAgentType(AgentType.getAgentType(type));
     }
 
     private static void parseAgentConfigInfo(Element root) throws ClassNotFoundException {
@@ -182,13 +185,9 @@ public class ConfigUtils {
     private static List<ConfigNode> parseItemConfig(NodeList nodeList) {
         List<ConfigNode> list = new ArrayList<ConfigNode>();
         for (int i = 0; i < nodeList.getLength(); i++) {
-            Node exclude = nodeList.item(i);
-            NamedNodeMap attrs = exclude.getAttributes();
+            Node item = nodeList.item(i);
+            NamedNodeMap attrs = item.getAttributes();
             ConfigNode configNode = new ConfigNode();
-            Node doc = exclude.getParentNode();
-            String type = doc.getAttributes().item(0).getNodeValue();
-            AgentType agentType = AgentType.getAgentType(type);
-            configNode.setType(agentType);
             for (int j = 0; j < attrs.getLength(); j++) {
                 if ("package".equals(attrs.item(j).getNodeName())) {
                     configNode.setPackageConfig(attrs.item(j).getNodeValue());
@@ -227,6 +226,10 @@ public class ConfigUtils {
         NamedNodeMap attr = logfile.item(0).getAttributes();
         String fileName = attr.item(0).getNodeValue();
         CONFIG.setLogFileName(fileName);
+    }
+
+    public static boolean shouldInclude(String className, String methodName) {
+        return ConfigUtils.shouldIncludeClass(StringUtils.getPackageName(className), StringUtils.getClassName(className), methodName);
     }
 
 }

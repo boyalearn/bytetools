@@ -42,11 +42,10 @@ public class FileIO {
             File file = new File(FILENAME);
 
             try {
-                return new PrintStream(new FileOutputStream(file,true));
+                return new PrintStream(new FileOutputStream(file, true));
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
-            System.out.println("PrintStream is null");
             return null;
         }
     }

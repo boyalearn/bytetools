@@ -1,9 +1,8 @@
 package com.test.service;
 
-import java.sql.Time;
-
 public class Cat {
-    public void eat() {
+    public void eat() throws Exception {
+        int i=1/0;
         System.out.println("cat eat");
     }
 

@@ -2,6 +2,11 @@
 <config>
     <log-file fileName="" />
     <agent type="com.bytecode.config.AgentType.TIME">
+        <include package="com.test.service"
+                 clazz=""
+                 method=""/>
+    </agent>
+    <!--<agent type="com.bytecode.config.AgentType.EXCEPTION">
         <exclude package=""
                  clazz=""
                  method="setNonNullParameter"/>
@@ -11,16 +16,5 @@
         <include package="org.apache.http.impl.io"
                  clazz="ContentLengthOutputStream"
                  method="write"/>
-    </agent>
-    <agent type="com.bytecode.config.AgentType.EXCEPTION">
-        <exclude package=""
-                 clazz=""
-                 method="setNonNullParameter"/>
-        <exclude package=""
-                 clazz="ProfessionalServiceAccessoryExpiredCleanTimer"
-                 method="getAccessoryCreateTime"/>
-        <include package="org.apache.http.impl.io"
-                 clazz="ContentLengthOutputStream"
-                 method="write"/>
-    </agent>
+    </agent>-->
 </config>
