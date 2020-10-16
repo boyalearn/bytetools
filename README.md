@@ -50,7 +50,7 @@ JDK8以上正常运行
 <dependency>
     <groupId>org.javassist</groupId>
     <artifactId>javassist</artifactId>
-    <version>3.20.0-GA</version>
+    <version>3.24.0-GA</version>
 </dependency>
 
 ```
