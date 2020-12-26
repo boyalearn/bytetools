@@ -1,10 +1,7 @@
 package com.bytecode.transformer;
 
-import com.bytecode.adapter.AgentAdapter;
-import com.bytecode.adapter.CommonAdapter;
-import com.bytecode.adapter.SqlAndAopAdapter;
-import com.bytecode.agent.TransformerAgent;
 import com.bytecode.config.ConfigUtils;
+import com.bytecode.filter.AgentFilterChain;
 import javassist.CtClass;
 
 import java.lang.instrument.ClassFileTransformer;
@@ -13,9 +10,7 @@ import java.security.ProtectionDomain;
 
 public class CodeByteTransformer implements ClassFileTransformer {
 
-    private AgentAdapter mybatisAopAgent = new SqlAndAopAdapter();
-
-    private AgentAdapter commonAdapter = new CommonAdapter();
+    private AgentFilterChain agentFilterChain = new AgentFilterChain();
 
     public byte[] transform(ClassLoader loader, String className, Class<?> classBeingRedefined,
                             ProtectionDomain protectionDomain, byte[] classfileBuffer) throws IllegalClassFormatException {
@@ -23,20 +18,9 @@ public class CodeByteTransformer implements ClassFileTransformer {
             return null;
         }
         try {
-            CtClass tmpCtClass;
-            TransformerAgent agent = mybatisAopAgent.adapter(className, loader);
-            if (null != agent) {
-                tmpCtClass = agent.transform(className, loader);
-                if (null != tmpCtClass) {
-                    return tmpCtClass.toBytecode();
-                }
-            }
-            agent = commonAdapter.adapter(className, loader);
-            if (null != agent) {
-                tmpCtClass = agent.transform(className, loader);
-                if (null != tmpCtClass) {
-                    return tmpCtClass.toBytecode();
-                }
+            CtClass tmpCtClass = agentFilterChain.doTransform(className, loader);
+            if (null != tmpCtClass) {
+                return tmpCtClass.toBytecode();
             }
 
         } catch (Exception e) {

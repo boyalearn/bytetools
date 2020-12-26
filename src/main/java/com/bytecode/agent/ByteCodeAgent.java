@@ -19,9 +19,11 @@ public class ByteCodeAgent implements TransformerAgent {
             }
             String packageName = StringUtils.getPackageName(className);
             String clazzName = StringUtils.getClassName(className);
-            if (AgentType.TIME.equals(ConfigUtils.getAgentType()) && ConfigUtils.shouldIncludeClass(packageName, clazzName, method.getName()))
+            if (AgentType.TIME.equals(ConfigUtils.getAgentType())
+                    && ConfigUtils.shouldIncludeClass(packageName, clazzName, method.getName()))
                 MethodUtil.changeMethodToMonitorSpendTime(ctClass, method);
-            if (AgentType.EXCEPTION.equals(ConfigUtils.getAgentType()) && ConfigUtils.shouldIncludeClass(packageName, clazzName, method.getName()))
+            if (AgentType.EXCEPTION.equals(ConfigUtils.getAgentType())
+                    && ConfigUtils.shouldIncludeClass(packageName, clazzName, method.getName()))
                 MethodUtil.changeMethodToMonitorException(ctClass, method);
 
         }

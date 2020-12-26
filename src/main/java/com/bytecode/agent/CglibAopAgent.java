@@ -34,7 +34,7 @@ public class CglibAopAgent implements TransformerAgent {
         methodBody.append("{");
         methodBody.append("    long __startTime=System.currentTimeMillis();");
         methodBody.append("    try {");
-        methodBody.append("        return  #copyMethodName#($$);");
+        methodBody.append("        return  " + copyMethodName + "($$);");
         methodBody.append("    } catch( Exception e) {");
         methodBody.append("        throw e;");
         methodBody.append("    }finally{ ");
@@ -45,7 +45,7 @@ public class CglibAopAgent implements TransformerAgent {
         methodBody.append("            com.bytecode.utils.MonitorUtil.monitor( _className+\".\"+_methodName+\"(\"+_parameters+\")\", System.currentTimeMillis()-__startTime );");
         methodBody.append("    }");
         methodBody.append("}");
-        return methodBody.toString().replaceAll("#copyMethodName#", copyMethodName);
+        return methodBody.toString();
     }
 
 }

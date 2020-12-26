@@ -214,10 +214,6 @@ public class ConfigUtils {
         return null;
     }
 
-    public static void main(String[] args) {
-        loadConfig("");
-    }
-
     private static void parseLogFileInfo(Element root) throws Exception {
         NodeList logfile = root.getElementsByTagName("log-file");
         if (logfile.getLength() > 1) {

@@ -48,18 +48,18 @@ public class MybatisAgent implements TransformerAgent {
     }
 
     private String buildMonitorTimeAopMethodBody(String copyMethodName) throws NotFoundException, CannotCompileException {
-        StringBuilder sb = new StringBuilder("");
-        sb.append("{");
-        sb.append("    long __startTime=System.currentTimeMillis();");
-        sb.append("    try {");
-        sb.append("        return  #copyMethodName#($$);");
-        sb.append("    } catch( Exception e) {");
-        sb.append("        throw e;");
-        sb.append("    }finally{ ");
-        sb.append("        String _sql = $1.getSqlSource().getBoundSql($2).getSql();");
-        sb.append("        com.bytecode.utils.MonitorUtil.monitor( _sql, System.currentTimeMillis()-__startTime );");
-        sb.append("    }");
-        sb.append("}");
-        return sb.toString().replaceAll("#copyMethodName#", copyMethodName);
+        StringBuilder body = new StringBuilder("");
+        body.append("{");
+        body.append("    long __startTime=System.currentTimeMillis();");
+        body.append("    try {");
+        body.append("        return  "+copyMethodName+"($$);");
+        body.append("    } catch( Exception e) {");
+        body.append("        throw e;");
+        body.append("    }finally{ ");
+        body.append("        String _sql = $1.getSqlSource().getBoundSql($2).getSql();");
+        body.append("        com.bytecode.utils.MonitorUtil.monitor( _sql, System.currentTimeMillis()-__startTime );");
+        body.append("    }");
+        body.append("}");
+        return body.toString();
     }
 }

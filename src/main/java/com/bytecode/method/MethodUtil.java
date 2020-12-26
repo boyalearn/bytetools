@@ -33,25 +33,22 @@ public class MethodUtil {
     }
 
     private static String buildMonitorTimeMethodBody(CtMethod ctMethod, String copyMethodName) throws NotFoundException, CannotCompileException {
-        StringBuilder body = new StringBuilder();
-
+        StringBuffer body = new StringBuffer();
+        String methodName = ctMethod.getLongName();
         body.append("{");
         body.append("    long _startTime = System.currentTimeMillis();");
         body.append("    try{");
-        body.append("        #return# #copyMethodName#($$);");
+        body.append("        #return# " + copyMethodName + "($$);");
         body.append("    }finally{");
-        body.append("        com.bytecode.utils.MonitorUtil.monitor( \"#methodName#\" , System.currentTimeMillis()-_startTime );");
+        body.append("        com.bytecode.utils.MonitorUtil.monitor( \"" + methodName + "\" , System.currentTimeMillis()-_startTime );");
         body.append("    }");
         body.append("}");
 
-        String methodName = ctMethod.getLongName();
-        String methodBody = body.toString().replaceAll("#copyMethodName#", copyMethodName)
-                .replaceAll("#methodName#", methodName);
-
+        String bodyContext = body.toString();
         if ("void".equals(ctMethod.getReturnType().getName())) {
-            return methodBody.replaceAll("#return#", "");
+            return bodyContext.replaceAll("#return#", "");
         } else {
-            return methodBody.replaceAll("#return#", "return");
+            return bodyContext.replaceAll("#return#", "return");
         }
     }
 
@@ -102,18 +99,19 @@ public class MethodUtil {
         StringBuilder body = new StringBuilder();
         body.append("{");
         body.append("    try{");
-        body.append("        #return# #newMethod#($$); ");
+        body.append("        #return# "+newName+"($$); ");
         body.append("    }catch(Exception e){");
         body.append("        com.bytecode.utils.MonitorUtil.printE(e);");
         body.append("        throw e;");
         body.append("    }");
         body.append("}");
 
-        String methodBody = body.toString().replaceAll("#newMethod#", newName);
+        String bodyContext=body.toString();
+
         if ("void".equals(method.getReturnType().getName())) {
-            return methodBody.replaceAll("#return#", "");
+            return bodyContext.replaceAll("#return#", "");
         } else {
-            return methodBody.replaceAll("#return#", "return");
+            return bodyContext.replaceAll("#return#", "return");
         }
     }
 
